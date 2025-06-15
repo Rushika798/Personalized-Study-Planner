@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Study Plan</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 70%;
+            margin: 0 auto 30px auto;
+            border-collapse: collapse;
+            box-shadow: 0 0 10px #ccc;
+            background: white;
+        }
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+            font-size: 1.1em;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f7ff;
+        }
+        .no-plan {
+            text-align: center;
+            font-style: italic;
+            margin-top: 50px;
+            font-size: 1.2em;
+            color: #666;
+        }
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Your Study Plan</h1>
+
+    {% if plan and plan|length > 0 %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Time Slot</th>
+                    <th>Subject</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for time_slot, subject in plan.items() %}
+                    <tr>
+                        <td>{{ time_slot }}</td>
+                        <td>{{ subject }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="no-plan">No study plan found. Please <a href="{{ url_for('plan') }}">create a study plan</a>.</p>
+    {% endif %}
+
+    <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+
+</body>
+</html>

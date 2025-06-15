@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Study Plan - Study Planner</title>
+
+  <!-- TailwindCSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      let subjectCounter = 0;
+      document.getElementById('add-subject').addEventListener('click', function () {
+        subjectCounter++;
+        const container = document.getElementById('subjects-container');
+        const newSubjectDiv = document.createElement('div');
+        newSubjectDiv.classList.add('p-4', 'border', 'border-gray-300', 'rounded-lg', 'mb-4', 'bg-white', 'shadow-sm');
+        newSubjectDiv.innerHTML = `
+          <h3 class="text-xl font-semibold mb-4 text-gray-800">Subject ${subjectCounter + 1}</h3>
+          <div class="mb-4">
+            <label for="subject-${subjectCounter}" class="block text-gray-700 text-sm font-bold mb-2">Subject Name:</label>
+            <input type="text" id="subject-${subjectCounter}" name="subject[]" required
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+          </div>
+
+          <div class="mb-4">
+            <label for="topic-${subjectCounter}" class="block text-gray-700 text-sm font-bold mb-2">Topics/Chapters (comma-separated):</label>
+            <input type="text" id="topic-${subjectCounter}" name="topic[]" required
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+          </div>
+
+          <div class="mb-4">
+            <label for="difficulty-${subjectCounter}" class="block text-gray-700 text-sm font-bold mb-2">Difficulty (1-10):</label>
+            <input type="number" id="difficulty-${subjectCounter}" name="difficulty[]" min="1" max="10" required
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+          </div>
+
+          <div class="mb-4">
+            <label for="exam_date-${subjectCounter}" class="block text-gray-700 text-sm font-bold mb-2">Exam Date:</label>
+            <input type="date" id="exam_date-${subjectCounter}" name="exam_date[]" required
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+          </div>
+        `;
+        container.appendChild(newSubjectDiv);
+      });
+    });
+  </script>
+</head>
+<body class="bg-gradient-to-br from-blue-100 to-indigo-200 font-sans leading-normal tracking-normal min-h-screen py-10">
+  <div class="container mx-auto p-6 bg-white shadow-lg rounded-lg mt-10 max-w-2xl">
+    <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">
+      Create Your Study Plan for <span class="text-blue-600">{{ username }}</span>
+    </h1>
+    <hr class="mb-6 border-gray-300" />
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="mb-4">
+          {% for category, message in messages %}
+            <li class="p-3 mb-2 rounded-md 
+              {% if category == 'error' %}bg-red-100 text-red-700
+              {% elif category == 'success' %}bg-green-100 text-green-700
+              {% else %}bg-blue-100 text-blue-700{% endif %}">
+              {{ message }}
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('plan') }}" method="POST">
+      <div id="subjects-container">
+        <!-- Default Subject Entry -->
+        <div class="subject-entry p-4 border border-gray-300 rounded-lg mb-4 bg-white shadow-sm">
+          <h3 class="text-xl font-semibold mb-4 text-gray-800">Subject 1</h3>
+
+          <div class="mb-4">
+            <label for="subject-0" class="block text-gray-700 text-sm font-bold mb-2">Subject Name:</label>
+            <input type="text" id="subject-0" name="subject[]" required
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+          </div>
+
+          <div class="mb-4">
+            <label for="topic-0" class="block text-gray-700 text-sm font-bold mb-2">Topics/Chapters (comma-separated):</label>
+            <input type="text" id="topic-0" name="topic[]" required
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+          </div>
+
+          <div class="mb-4">
+            <label for="difficulty-0" class="block text-gray-700 text-sm font-bold mb-2">Difficulty (1-10):</label>
+            <input type="number" id="difficulty-0" name="difficulty[]" min="1" max="10" required
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+          </div>
+
+          <div class="mb-4">
+            <label for="exam_date-0" class="block text-gray-700 text-sm font-bold mb-2">Exam Date:</label>
+            <input type="date" id="exam_date-0" name="exam_date[]" required
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+          </div>
+        </div>
+      </div>
+
+      <button type="button" id="add-subject"
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-6">
+        Add Another Subject
+      </button>
+
+      <div class="mb-4">
+        <label for="daily_hours" class="block text-gray-700 text-sm font-bold mb-2">Daily Study Hours (e.g., 4.5):</label>
+        <input type="number" id="daily_hours" name="daily_hours" step="0.5" min="0.5" required
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+      </div>
+
+      <div class="mb-6">
+        <label for="study_start_time" class="block text-gray-700 text-sm font-bold mb-2">Preferred Daily Study Start Time:</label>
+        <input type="time" id="study_start_time" name="study_start_time" value="09:00" required
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+      </div>
+
+      <div class="flex items-center justify-between">
+        <button type="submit"
+          class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+          Generate Plan
+        </button>
+        <a href="{{ url_for('dashboard') }}"
+          class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+          Cancel
+        </a>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
